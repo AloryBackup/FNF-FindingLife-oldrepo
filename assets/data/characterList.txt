@@ -2,7 +2,6 @@ bf
 dad
 gf
 spooky
-haxeflixel
 pico
 mom
 mom-car
@@ -14,9 +13,5 @@ gf-christmas
 monster
 bf-pixel
 senpai
+senpai-angry
 spirit
-whitty
-zardy
-spong-final
-opheebop
-opheebop-fix
