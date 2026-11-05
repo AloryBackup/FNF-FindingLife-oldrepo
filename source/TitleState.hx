@@ -43,15 +43,6 @@ class TitleState extends MusicBeatState
 	var wackyImage:FlxSprite;	
 	override public function create():Void
 	{
-		var q:Dynamic = Highscore.getRaw("OH SHI");
-		var r:Bool = false;
-		if(q != null){
-			r=q;
-			if(r)
-				Main.postfix = "-over";
-			else
-				Main.postfix = "";
-		}
 		Main.state.largeImageKey = 'boyfriend${Main.postfix}';
 		Main.pupdate();
 		FlxG.scaleMode = new StageSizeScaleMode();
@@ -62,7 +53,7 @@ class TitleState extends MusicBeatState
 		#end
 
 		PlayerSettings.init();
-		curWacky = ["Fuck Kade Engine,", "I ripped your anus out"];
+		//curWacky = ["Fuck Kade Engine,", "I ripped your anus out"];
 
 		// DEBUG BULLSHIT
 
@@ -130,7 +121,6 @@ class TitleState extends MusicBeatState
 			// FlxG.sound.list.add(music);
 			// music.play();
 			FlxG.sound.playMusic('assets/music/freakyMenu' + TitleState.soundExt, 0);
-
 			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
 
@@ -280,7 +270,7 @@ class TitleState extends MusicBeatState
 					trace("Compiler doesn't want to believe this is the up-to-date FNF repo.");
 					// FlxG.switchState(new OutdatedSubState()); No.
 				}*/
-				FlxG.switchState(new MainMenuState());
+				FlxG.switchState(()->new MainMenuState());
 			});
 			// FlxG.sound.play('assets/music/titleShoot' + TitleState.soundExt, 0.7);
 		}
@@ -337,26 +327,28 @@ class TitleState extends MusicBeatState
 
 		FlxG.log.add(curBeat);
 
+		//switch (curBeat)
 		switch (curBeat)
 		{
 			case 1:
-				createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+			//	createCoolText(['ninjamuffin99', 'phantomArcade', 'kawaisprite', 'evilsk8er']);
+							createCoolText(['The', 'Funkin', 'Krew', 'Has']);
 			// credTextShit.visible = true;
 			case 3:
 				addMoreText('present');
-			    credTextShit.text += '\npresent...';
+			// credTextShit.text += '\npresent...';
 			// credTextShit.addText();
 			case 4:
 				deleteCoolText();
 			// credTextShit.visible = false;
-			 credTextShit.text = 'In association \nwith';
+			// credTextShit.text = 'In association \nwith';
 			// credTextShit.screenCenter();
 			case 5:
-				//createCoolText(['In association', 'with']);
+				createCoolText(['In association', 'with']);
 			case 7:
-				//addMoreText('newgrounds and masochism');
+				addMoreText('newgrounds');
 				ngSpr.visible = true;
-			 credTextShit.text += '\nNewgrounds';
+			// credTextShit.text += '\nNewgrounds';
 			case 8:
 				deleteCoolText();
 				ngSpr.visible = false;
@@ -376,13 +368,13 @@ class TitleState extends MusicBeatState
 			// credTextShit.text = "Friday";
 			// credTextShit.screenCenter();
 			case 13:
-				addMoreText('i have been working for 2 months on this');
+				addMoreText('Friday Night');
 			// credTextShit.visible = true;
 			case 14:
-				addMoreText('please let this all pay off');
+				addMoreText("Funkin':");
 			// credTextShit.text += '\nNight';
 			case 15:
-				addMoreText('Friday Night Fucked'); // credTextShit.text += '\nFunkin';
+				addMoreText('Finding Life'); // credTextShit.text += '\nFunkin';
 
 			case 16:
 				skipIntro();

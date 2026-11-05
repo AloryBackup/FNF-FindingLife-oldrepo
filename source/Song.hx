@@ -10,24 +10,37 @@ using StringTools;
 typedef SwagSong =
 {
 	var song:String;
+		var songFancy:String; // Added
+		var songArtists:String; // Added
+		var songCharters:String; // Added
 	var notes:Array<SwagSection>;
 	var bpm:Int;
 	var needsVoices:Bool;
 	var speed:Float;
-	var sixkey:Bool;
-	var ninekey:Bool;
-	var clf:Int; // chocolatte with a side of milk
+
 	var player1:String;
 	var player2:String;
+	var gf:String; // Added
+	var stage:String; // Added
+
 	var validScore:Bool;
-	var actors:Int;
+
+	var actors:Int; // I dunno what this is.
 	var excessPlayers:Array<String>;
 	var offsets:Array<Array<Float>>;
+
+	// Extra base stuff, pre-existed.
+	var sixkey:Bool;
+	var ninekey:Bool;
+	var clf:Int; // chocolatte with a side of milk // I dunno what this does.
 }
 
 class Song
 {
 	public var song:String;
+		public var songFancy:String; // Added
+		public var songArtists:String; // Added
+		public var songCharters:String; // Added
 	public var notes:Array<SwagSection>;
 	public var bpm:Int;
 	public var needsVoices:Bool = true;
@@ -35,6 +48,8 @@ class Song
 
 	public var player1:String = 'bf';
 	public var player2:String = 'dad';
+	public var gf:String = 'gf'; // Added
+	public var stage:String; // Added
 
 	public function new(song, notes, bpm)
 	{
@@ -45,7 +60,7 @@ class Song
 
 	public static function loadFromJson(jsonInput:String, ?folder:String):SwagSong
 	{
-		var rawJson = Assets.getText('assets/data/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
+		var rawJson = Assets.getText('assets/songs/' + folder.toLowerCase() + '/' + jsonInput.toLowerCase() + '.json').trim();
 
 		while (!rawJson.endsWith("}"))
 		{

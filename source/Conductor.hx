@@ -28,6 +28,9 @@ class Conductor
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
 
+	//KEC
+	public static var rate:Float = 1.0; //  Determines the current playback speed of the song. Goes unused since there is no reason to speed or slow the song.
+
 	public function new()
 	{
 	}

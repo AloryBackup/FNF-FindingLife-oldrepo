@@ -107,7 +107,7 @@ class OptionsMenu extends MusicBeatState
 		},
 		{
 			type: "cb",
-			grey: true, // Grey it out. Nobody should ever be allowed to access this.
+			//grey: true, // Grey it out. Nobody should ever be allowed to access this.
 			name: "kademode",
 			saveas: "km",
 			def: false

@@ -25,30 +25,11 @@ class StoryMenuState extends MusicBeatState
 		['Tutorial'],
 		['Bopeebo', 'Fresh', 'Dadbattle'],
 		['Spookeez', 'South'],
-		['Flixel', 'Self-Modifying', 'Bitrot'],
-					/*
-						Fuck you,
-						* Madness
-						* Ballistic
-						* M1KU-B0T
-						* Target-Practice
-						* Boxing Match
-						* The random overmaps I've made
-						* run (unused version)
-						I'll be harder.
-						
-						Flixel = Test, but with the FNFuck executable being used as Pixel BF's
-									   voice (Might be possible to pull off )
-						Self-Modifying = Completely off-the rails track (HaxeFlixel "Phase 2")
-						Bitrot = Phase 3, where HaxeFlixel is trying to calm BF down to avoid
-									  the game self-destructing
-					*/
 		['Pico', 'Philly', "Blammed"],
 		['Satin-Panties', "High", "Milf"],
 		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
-		['Senpai', 'Roses', 'Thorns'],
-		['Void', "Ultra Ballistic", "Cursecore", "Fool-34", "Brazil", "Brazil-2"] // Void is a test map, Ultra Ballistic is Ballistic at double speed
-												   // I plan on adding some speed options.
+		['Senpai', 'Roses', 'Thorns']
+		// Add the rest of levels once I softcode some things.
 	];
 	public static var curDifficulty:Int = 1;
 
@@ -58,24 +39,22 @@ class StoryMenuState extends MusicBeatState
 		['dad', 'bf', 'gf'],
 		['dad', 'bf', 'gf'],
 		['spooky', 'bf', 'gf'],
-		['parents-christmas', 'bf', 'gf'],
 		['pico', 'bf', 'gf'],
 		['mom', 'bf', 'gf'],
 		['parents-christmas', 'bf', 'gf'],
-		['senpai', 'bf', 'gf'],
-		['none', 'bf', 'none']
+		['senpai', 'bf', 'gf']
 	];
 
 	public static final weekNames:Array<String> = [
 		"Tutorial",
 		"Daddy Dearest",
 		"Spooky Month",
-		"unplanned",
 		"Pico",
 		"Mommy Must Murder",
 		"Red Snow",
 		"Hating Simulator FT. Moawling",
-		"Bonus Content"
+		"Tankman",
+		"Due Debts"
 	];
 
 	var txtWeekTitle:FlxText;
@@ -96,8 +75,8 @@ class StoryMenuState extends MusicBeatState
 	override function create()
 	{
 		Main.clear();
-		Main.setstate("Selecting week...", "<beta build>");
-		Main.state.largeImageKey = 'boyfriend${Main.postfix}';
+		//Main.setstate("Selecting week...", "<beta build>");
+	//	Main.state.largeImageKey = 'boyfriend${Main.postfix}';
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
@@ -109,7 +88,7 @@ class StoryMenuState extends MusicBeatState
 
 		persistentUpdate = persistentDraw = true;
 
-		scoreText = new FlxText(10, 10, 0, "SCORE: ---\nAVERAGE WEEK RATING: N/A", 18);
+		scoreText = new FlxText(10, 10, 0, "High Score: ---\nAverage Level RATING: N/A", 18);
 		scoreText.setFormat("VCR OSD Mono", 18);
 
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
@@ -243,7 +222,7 @@ class StoryMenuState extends MusicBeatState
 			"BAD",
 			"GOOD",
 			"SICK",
-			"SICK*"
+			"SICK (PERFECT)"
 		][r];
 	}
 
@@ -252,7 +231,7 @@ class StoryMenuState extends MusicBeatState
 		// scoreText.setFormat('VCR OSD Mono', 32);
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore[0], 0.5 * (60 / FlxG.updateFramerate)));
 
-		scoreText.text = 'WEEK SCORE: $lerpScore \nAVERAGE WEEK RATING: ${Rate(intendedScore[1])}';
+		scoreText.text = 'High Score: $lerpScore \nAverage Level Rank: ${Rate(intendedScore[1])}';
 
 		txtWeekTitle.text = weekNames[curWeek].toUpperCase();
 		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);

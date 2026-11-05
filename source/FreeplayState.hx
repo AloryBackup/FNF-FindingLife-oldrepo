@@ -43,7 +43,7 @@ class FreeplayState extends MusicBeatState
 		'Brazil',
 		'Brazil-2',
 		'Pre-Mortal',
-	];
+	]; //To-Do: Remove theses.
 
 	override function create()
 	{
@@ -210,7 +210,7 @@ class FreeplayState extends MusicBeatState
 
 		if (controls.BACK)
 		{
-			FlxG.switchState(new MainMenuState());
+			FlxG.switchState(()->new MainMenuState());
 		}
 
 		if (accepted)
@@ -223,13 +223,13 @@ class FreeplayState extends MusicBeatState
 				PlayState.Bullshit = false;
 				PlayState.isStoryMode = false;
 				PlayState.storyDifficulty = curDifficulty;
-				FlxG.switchState(new PlayState());
+				FlxG.switchState(()->new PlayState());
 				if (FlxG.sound.music != null)
 					FlxG.sound.music.stop();
 			} catch(_e) {
 				BugHandlerState.text = "LOADED NONEXISTENT JSON FILE";
 				trace(_e);
-				FlxG.switchState(new BugHandlerState());
+				FlxG.switchState(()->new BugHandlerState());
 			}
 		}
 	}
@@ -287,7 +287,8 @@ class FreeplayState extends MusicBeatState
 		diffText.text = '${songs[curSelected].toUpperCase()} - $Difficulty';
 		diffText.x = (FlxG.width / 2) - (diffText.width / 2);
 
-		FlxG.sound.playMusic('assets/music/' + songs[curSelected] + "_Inst" + TitleState.soundExt, 0);
+		//FlxG.sound.playMusic('assets/music/' + songs[curSelected] + "_Inst" + TitleState.soundExt, 0);
+		FlxG.sound.playMusic('assets/songs/' + songs[curSelected].toLowerCase() + "/Inst" + TitleState.soundExt, 0);
 
 		var bullShit:Int = 0;
 
