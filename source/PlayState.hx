@@ -194,7 +194,7 @@ class PlayState extends MusicBeatState
 
 	private var iconP1:HealthIcon;
 	private var iconP2:HealthIcon;
-	public var camHUD:FlxCamera; // was private
+	private var camHUD:FlxCamera; // was private
 	//public static var camHPHUD:FlxCamera;
 	private var camGame:FlxCamera;
 	public static var centeredNotes:Bool = false;
@@ -302,7 +302,7 @@ class PlayState extends MusicBeatState
 		}
 		if(Highscore.getRaw("bp") != null
 			Bprec = bti(Highscore.getRaw("bp"));)*/
-		// var gameCam:FlxCamera = FlxG.camera;
+		 var gameCam:FlxCamera = FlxG.camera;
 		notesHit = 0;
 		averageRating = -1;
 		if(Highscore.getRaw("downscroll") != null)
@@ -330,7 +330,7 @@ class PlayState extends MusicBeatState
 
 		//FlxCamera.defaultCameras = [camGame];
 
-		FlxG.camera.followLerp = (60 / FlxG.updateFramerate);
+		camGame.followLerp = (60 / FlxG.updateFramerate);
 
 		persistentUpdate = true;
 		persistentDraw = true;
@@ -1098,10 +1098,10 @@ class PlayState extends MusicBeatState
 
 		add(camFollow);
 
-		FlxG.camera.follow(camFollow, LOCKON, 0.04);
-		// FlxG.camera.setScrollBounds(0, FlxG.width, 0, FlxG.height);
-		FlxG.camera.zoom = defaultCamZoom;
-		FlxG.camera.focusOn(camFollow.getPosition());
+		camGame.follow(camFollow, LOCKON, 0.04);
+		// camGame.setScrollBounds(0, FlxG.width, 0, FlxG.height);
+		camGame.zoom = defaultCamZoom;
+		camGame.focusOn(camFollow.getPosition());
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
@@ -1184,14 +1184,14 @@ class PlayState extends MusicBeatState
 						FlxG.sound.play('assets/sounds/Lights_Turn_On' + TitleState.soundExt);
 						camFollow.y = -2050;
 						camFollow.x += 200;
-						FlxG.camera.focusOn(camFollow.getPosition());
-						FlxG.camera.zoom = 1.5;
+						camGame.focusOn(camFollow.getPosition());
+						camGame.zoom = 1.5;
 
 						new FlxTimer().start(0.8, function(tmr:FlxTimer)
 						{
 							camHUD.visible = true;
 							remove(blackScreen);
-							FlxTween.tween(FlxG.camera, {zoom: defaultCamZoom}, 2.5, {
+							FlxTween.tween(camGame, {zoom: defaultCamZoom}, 2.5, {
 								ease: FlxEase.quadInOut,
 								onComplete: function(twn:FlxTween)
 								{
@@ -1815,7 +1815,7 @@ class PlayState extends MusicBeatState
 
 	function tweenCamIn():Void
 	{
-		FlxTween.tween(FlxG.camera, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+		FlxTween.tween(camGame, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 	}
 
 	override function openSubState(SubState:FlxSubState)
@@ -2122,7 +2122,7 @@ class PlayState extends MusicBeatState
 
 				if (SONG.song.toLowerCase() == 'tutorial')
 				{
-					FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
+					FlxTween.tween(camGame, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {ease: FlxEase.elasticInOut});
 				}
 			}
 		}
@@ -2130,6 +2130,7 @@ class PlayState extends MusicBeatState
 		if (camZooming)
 		{
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
+			camGame.zoom = FlxMath.lerp(defaultCamZoom, camGame.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
 			//camHPHUD.zoom = FlxMath.lerp(1, camHPHUD.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
 		}
@@ -3444,16 +3445,16 @@ class PlayState extends MusicBeatState
 		wiggleShit.update(Conductor.crochet);
 
 		// HARDCODING FOR MILF ZOOMS!
-		if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && camZooming && FlxG.camera.zoom < 1.35)
+		if (curSong.toLowerCase() == 'milf' && curBeat >= 168 && curBeat < 200 && camZooming && camGame.zoom < 1.35)
 		{
-			FlxG.camera.zoom += 0.015;
+			camGame.zoom += 0.015;
 			camHUD.zoom += 0.03;
 			//camHPHUD.zoom += 0.03;
 		}
 
-		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
+		if (camZooming && camGame.zoom < 1.35 && curBeat % 4 == 0)
 		{
-			FlxG.camera.zoom += 0.015;
+			camGame.zoom += 0.015;
 			camHUD.zoom += 0.03;
 			//camHPHUD.zoom += 0.03;
 		}
