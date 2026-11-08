@@ -42,13 +42,13 @@ import openfl.display.StageQuality;
 import openfl.filters.ShaderFilter;
 import openfl.filters.ColorMatrixFilter;
 import Controls.KeyboardScheme;
-
+/*
 //import Stage;
 
 import stage.StageHandler; // Stage.hx of commit 3013992 of FNF
 import stage.StageData.StageDataParser; // Same filename as OG
-
-
+*/
+import stage.JSONStage;
 
 /* Revamped note handling (Cyclycle)
  - Handle notes one at a time
@@ -97,8 +97,8 @@ class PlayState extends MusicBeatState
 	public static var instance:PlayState = null; // Taken from KEC.
 
 	public static var downscroll:Bool = false;
-	//public static var curStage:String = '';
-	public var curStage:Stage;
+	public static var curStage:String = '';
+	//public var curStage:Stage;
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
@@ -180,8 +180,8 @@ class PlayState extends MusicBeatState
 
 	private var iconP1:HealthIcon;
 	private var iconP2:HealthIcon;
-	private var camHUD:FlxCamera;
-	public static var camHPHUD:FlxCamera;
+	public var camHUD:FlxCamera; // was private
+	//public static var camHPHUD:FlxCamera;
 	private var camGame:FlxCamera;
 	public static var centeredNotes:Bool = false;
 
@@ -209,6 +209,9 @@ class PlayState extends MusicBeatState
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
 	var auxTxt:FlxText;
+
+	var foreObjects:JSONStage;
+	public	var distanceObjects:JSONStage; // Custom stage loading mechanism. I hope this works...
 	
 
 	public static var campaignScore:Int = 0;
@@ -282,13 +285,13 @@ class PlayState extends MusicBeatState
 		Average = bot ? "UNRATED" : "N/A";
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
-		camHPHUD = new FlxCamera();
+		//camHPHUD = new FlxCamera();
 
 		camHUD.bgColor.alpha = 0;
-		camHPHUD.bgColor.alpha = 0;
+		//camHPHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camHPHUD);
+		//FlxG.cameras.add(camHPHUD);
 		FlxG.cameras.add(camHUD);
 
 		//FlxCamera.defaultCameras = [camGame];
@@ -887,17 +890,8 @@ class PlayState extends MusicBeatState
 		}
 
 		boyfriend = new Boyfriend(770, 450, SONG.player1);
-		
-		/*switch(SONG.player1){
-			case 'opheebop-fix': // my fever dreams are real
-				boyfriend.y -= 220;
-			case 'haxeflixel': // HaxeFlixel???? 😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳😳
-				boyfriend.y -= 350;
-				boyfriend.x -= 200;
-		}*/
 
-
-		initStageContent();
+		//initStageContent();
 		// initializing characters i hope to make soon *if needed*
 
 
@@ -907,7 +901,7 @@ class PlayState extends MusicBeatState
 
 
 		// REPOSITIONING PER STAGE
-		switch (curStage)
+		/*switch (curStage)
 		{
 			case 'limo':
 				boyfriend.y -= 220;
@@ -940,25 +934,44 @@ class PlayState extends MusicBeatState
 				boyfriend.y += 220;
 				gf.x += 180;
 				gf.y += 300;
-		}
+		}*/
+		/*
+		Variable reference since I forgot:
+				var DynamicKey:Dynamic = Highscore.getRaw("UH OH!");
+		*/
+
+		if (curStage == null) curStage = "stage";
+		trace(curStage);
+
+		distanceObjects = new JSONStage(curStage, "back");
+		//distanceObjects.loadElements(curStage, "back");
+		add(distanceObjects);
+		distanceObjects.cameras = [camGame];
+
+		/*for (i in distanceObjects.toAdd){
+				add(i);
+				trace("for i in objects: " + i);
+		}*/
+		//trace("Object toAdd variable: " + distanceObjects.toAdd);
+		add(distanceObjects.back_spriteCollection);
 
 		add(gf);
-
-		// Shitty layering but whatev it works LOL
-		if (curStage == 'limo')
-			add(limo);
-
 		add(dad);
 		for(i in morePlayers)
 			add(i);
 		add(boyfriend);
 
-		/*doof = new DialogueBox(false, dialogue);
+		foreObjects = new JSONStage(curStage, "front");
+		//foreObjects.loadElements();
+		add(foreObjects);
+		//foreObjects.cameras = [camGame];
+
+		doof = new DialogueBox(false, dialogue);
 		// doof.x += 70;
 		// doof.y = FlxG.height * 0.5;
 		doof.scrollFactor.set();
 		doof.finishThing = startCountdown;
-		Conductor.songPosition = -5000;*/
+		Conductor.songPosition = -5000;
 		strumLine = new FlxSprite(0, downscroll ? FlxG.height * 0.66 : 50).makeGraphic(FlxG.width, 10);
 		strumLine.scrollFactor.set();
 
@@ -1037,7 +1050,7 @@ class PlayState extends MusicBeatState
 		add(iconP2);
 
 		strumLineNotes.cameras = [camHUD];
-		notes.cameras = [camHPHUD];
+		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
 		TimeBar.cameras = [camHUD];
@@ -1207,56 +1220,6 @@ class PlayState extends MusicBeatState
 
 
 
-
-	function initStageContent(){ // Refer to: https://github.com/FunkinCrew/Funkin/blob/301399200d89c7533ce3e2643290739dfbb28c02/source/PlayState.hx#L388
-			switch (SONG.song.toLowerCase())
-			{
-
-			case 'spookeez' | 'monster' | 'south':
-						curStageId = "spookyMansion";
-						loadStage(curStageId);
-
-					case 'pico' | 'blammed' | 'philly':
-						curStageId = 'phillyTrain';
-						loadStage(curStageId);
-
-					/*case "milf" | 'satin-panties' | 'high':
-						curStageId = 'limo';
-						defaultCamZoom *= 0.90;*/
-
-					default:
-						loadStage('mainStage');
-			}
-
-	}
-
-// https://github.com/FunkinCrew/Funkin/blob/301399200d89c7533ce3e2643290739dfbb28c02/source/PlayState.hx#L940
-	function loadStage(id:String){
-
-		if (curStage != null)
-			{
-				// Actually create and position the sprites.
-				curStage.buildStage();
-
-				// Apply camera zoom.
-				defaultCamZoom *= curStage.camZoom;
-
-				// Add the stage to the scene.
-				this.add(curStage);
-			}
-
-	}
-
-	 // Refer to: https://github.com/FunkinCrew/Funkin/blob/301399200d89c7533ce3e2643290739dfbb28c02/source/PlayState.hx#L646
-
-
-
-
-
-
-
-
-
 	function startCountdown():Void
 	{
 		inCutscene = false;
@@ -1408,8 +1371,10 @@ class PlayState extends MusicBeatState
 		if (!paused){
 			//FlxG.sound.playMusic("assets/songs/" + SONG.song + "_Inst" + TitleState.soundExt, 1, false);
 			FlxG.sound.playMusic('assets/songs/' + SONG.song.toLowerCase() + "/Inst" + TitleState.soundExt, 0);
+			trace('assets/songs/' + SONG.song.toLowerCase() + "/Inst" + TitleState.soundExt, 0);
 			if (SONG.needsVoices){
 				FlxG.sound.playMusic('assets/songs/' + SONG.song.toLowerCase() + "/Voices-" + SONG.player2 + TitleState.soundExt, 0); // Treat opponents' voices as the instrumental.
+				trace('assets/songs/' + SONG.song.toLowerCase() + "/Voices-" + SONG.player2 + TitleState.soundExt, 0);
 			}
 		}
 		FlxG.sound.music.onComplete = endSong;
@@ -2066,7 +2031,7 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
 			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
-			camHPHUD.zoom = FlxMath.lerp(1, camHPHUD.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
+			//camHPHUD.zoom = FlxMath.lerp(1, camHPHUD.zoom, Math.min(0.95 * (60 / FlxG.updateFramerate), 1));
 		}
 
 		FlxG.watch.addQuick("beatShit", curBeat);
@@ -3383,14 +3348,14 @@ class PlayState extends MusicBeatState
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
-			camHPHUD.zoom += 0.03;
+			//camHPHUD.zoom += 0.03;
 		}
 
 		if (camZooming && FlxG.camera.zoom < 1.35 && curBeat % 4 == 0)
 		{
 			FlxG.camera.zoom += 0.015;
 			camHUD.zoom += 0.03;
-			camHPHUD.zoom += 0.03;
+			//camHPHUD.zoom += 0.03;
 		}
 
 		iconP1.setGraphicSize(Std.int(iconP1.width + 30));

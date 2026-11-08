@@ -1,24 +1,58 @@
 {
+    "name": "Default Stage (Week 1)",
     "staticCam": false,
-    "positions": {
-        "bf": [
-            770,
-            450
-        ],
-        "gf": [
-            400,
-            130
-        ],
-        "dad": [
-            100,
-            100
-        ]
-    },
     "camZoom": 0.9,
     "hasGF": true,
     "camPosition": [
         639,
         359
     ],
-    "directory": ""
+
+    "directory":"assets/images/stages/default/",
+
+    "backSprites":[
+        {
+            "title":"bg",
+            "graphic":"stageback.png",
+            "x":-600,
+            "y":-200,
+            "antialiasing":true,
+            "scrollFactor":[0.9, 0.9]
+        },
+         {
+            "title":"stageFront",
+            "graphic":"stagefront.png",
+            "x":-650,
+            "y":-600,
+            "scale":[1.1, 1],
+            "antialiasing":true,
+            "scrollFactor":[0.9, 0.9]
+        },
+         {
+            "title":"stageCurtains",
+            "graphic":"stagecurtains.png",
+            "x":-500,
+            "y":-300,
+            "antialiasing":true,
+            "scrollFactor":[1.3, 1.3]
+        }
+    ],
+    "frontSprites":[],
+
+    "positions": {
+            "bf": [
+                770,
+                450
+            ],
+            "gf": [
+                400,
+                130
+            ],
+            "dad": [
+                100,
+                100
+            ]
+        }
+
+
 }

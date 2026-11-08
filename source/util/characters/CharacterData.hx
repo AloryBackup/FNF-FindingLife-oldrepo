@@ -43,23 +43,23 @@ class CharacterData
 
 	public function loadFromJson(char:String = 'bf', ?isPlayer:Bool = true, isGF:Bool = false)
 	{
-		var json = Paths.loadJSON('data/characters/$char');
+		var json = haxe.Json.parse('data/characters/$char');
 		if (json == null)
 		{
 			if (isPlayer)
 			{
 				trace("Couldn't Find JSON For " + char + ". Loading Default Boyfriend.");
-				json = Paths.loadJSON('data/characters/bf');
+				json = haxe.Json.parse('data/characters/bf');
 			}
 			else if (isGF)
 			{
 				trace("Couldn't Find JSON For " + char + ". Loading Default GF.");
-				json = Paths.loadJSON('data/characters/gf');
+				json = haxe.Json.parse('data/characters/gf');
 			}
 			else
 			{
 				trace("Couldn't Find JSON For " + char + ". Loading Default Opponent.");
-				json = Paths.loadJSON('data/characters/dad');
+				json = haxe.Json.parse('data/characters/dad');
 			}
 		}
 
