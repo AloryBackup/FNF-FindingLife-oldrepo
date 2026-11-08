@@ -33,7 +33,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
-import haxe.Json;
+import haxe.Json; // I doubt this is even required.
 import lime.utils.Assets;
 import lime.app.Application;
 import lime.ui.Window;
@@ -48,8 +48,22 @@ import Controls.KeyboardScheme;
 import stage.StageHandler; // Stage.hx of commit 3013992 of FNF
 import stage.StageData.StageDataParser; // Same filename as OG
 */
-import stage.JSONStage;
+//import stage.JSONStage;
 
+// JSON Stage Loading Port Imports
+	// Used for porting and improving the logic to/for PlayState. Commented lines were already imported.
+
+//import lime.app.Application; // For the error.
+    import openfl.events.UncaughtErrorEvent; // Also for the error.
+//import flixel.group.FlxGroup.FlxTypedGroup; // Groups
+//import flixel.graphics.frames.FlxAtlasFrames; // for animated sprites
+//import PlayState; // To reference in-game characters.
+//import flixel.FlxState;
+
+//
+
+
+// Pre-existing notes:
 /* Revamped note handling (Cyclycle)
  - Handle notes one at a time
  - Compress chords down into chord objects
@@ -187,7 +201,7 @@ class PlayState extends MusicBeatState
 
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
-	var halloweenBG:FlxSprite;
+	var halloweenBG:FlxSprite; //
 	var isHalloween:Bool = false;
 
 	var phillyCityLights:FlxTypedGroup<FlxSprite>;
@@ -203,16 +217,12 @@ class PlayState extends MusicBeatState
 	var santa:FlxSprite;
 
 	var bgGirls:BackgroundGirls;
-	var wiggleShit:WiggleEffect = new WiggleEffect();
+	var wiggleShit:WiggleEffect = new WiggleEffect(); //
 
 	var talking:Bool = true;
 	var songScore:Int = 0;
 	var scoreTxt:FlxText;
 	var auxTxt:FlxText;
-
-	var foreObjects:JSONStage;
-	public	var distanceObjects:JSONStage; // Custom stage loading mechanism. I hope this works...
-	
 
 	public static var campaignScore:Int = 0;
 
@@ -222,6 +232,28 @@ class PlayState extends MusicBeatState
 	public static var daPixelZoom:Float = 6;
 
 	var inCutscene:Bool = false;
+
+	// STAGE LOADING JSONS VARIABLE
+			// Some variables may be unused due to the reimplementation.
+
+			//var spriteLoadingScheme:String;
+            //var requestedStage:String = "stage"; // I don't feel like being too fancy here. // Nvm I iwll
+            //public var allSpriteLoader:Array<Dynamic>; // Used for the kill() function. Probably does not need to be public
+
+
+            // Recycled-external variables:
+                //public var camZoom:Float = 1.0;
+             //   public var toAdd:Array<Dynamic> = []; // Add BGs on stage startup, load BG in by using "toAdd.push(bgVar);" // From KEC, it might be what solves my problems!
+
+
+			var currentSpriteLoader:Array<Dynamic>;
+			public var levelSprite:FlxSprite;
+			public var parsedFile = haxe.Json.parse("{ }"); // The reason that there's two curly brackets is so that we can make the variable into a JSON later and not at the start. This is so we can use different JSON files and not worry about any errors further on!
+			public var stageSpriteCollection:FlxTypedGroup<FlxSprite>; //Maybe.
+
+
+	//
+
 	public static function campaignInit()
 	{
 		PlayState.campaignRating = -1;
@@ -943,17 +975,94 @@ class PlayState extends MusicBeatState
 		if (curStage == null) curStage = "stage";
 		trace(curStage);
 
-		distanceObjects = new JSONStage(curStage, "back");
+		/*distanceObjects = new JSONStage(curStage, "back");
 		//distanceObjects.loadElements(curStage, "back");
 		add(distanceObjects);
-		distanceObjects.cameras = [camGame];
+		distanceObjects.cameras = [camGame];*/
 
-		/*for (i in distanceObjects.toAdd){
-				add(i);
-				trace("for i in objects: " + i);
-		}*/
-		//trace("Object toAdd variable: " + distanceObjects.toAdd);
-		add(distanceObjects.back_spriteCollection);
+
+
+
+
+		// loadElements function would start here.
+
+
+		// Loading JSON File and Confirms Load
+					if (curStage == null || curStage.length < 1) curStage = 'stage';
+
+                    parsedFile = haxe.Json.parse(sys.io.File.getContent('assets/data/stages/$curStage.json'));
+                    trace('Loading stage file: $curStage as assets/data/stages/$curStage.json');
+                    currentSpriteLoader = parsedFile.backSprites;
+
+		// The front/back sprites won't be seperated this time, opting for a way to instead add the characters with the sprites.
+
+
+		// Checking for all values.
+
+		healthBarBG = new FlxSprite(0, FlxG.height * 0.86).loadGraphic('assets/images/healthBar.png');
+		healthBarBG.screenCenter(X);
+		healthBarBG.scrollFactor.set();
+		add(healthBarBG);
+
+		stageSpriteCollection = new FlxTypedGroup<FlxSprite>();
+		add (stageSpriteCollection);
+
+				for (i in currentSpriteLoader){ // for sprites in either front or back. Removed some null checks. Screw it, we ball.
+                                            levelSprite = new FlxSprite(i.x, i.y); // For variables x and y in the json. Ints, all real numbers.
+
+                                            if (parsedFile.directory != null)
+                                                levelSprite.loadGraphic(parsedFile.directory + i.graphic); //directory and graphic. directory should end with a forward slash /
+                                            else
+                                                levelSprite.loadGraphic(i.graphic); //graphic
+
+                                            levelSprite.flipX = i.flipX; //flipX || bool: true/false
+                                            levelSprite.flipY = i.flipY; //flipY
+
+                                            if (i.scale != null){levelSprite.scale.x = i.scale[0]; levelSprite.scale.y = i.scale[1];} // scale || array of floats: [float, float]
+                                            if (i.antialiasing != null) levelSprite.antialiasing = i.antialiasing; //antialiasing || bool: true/false
+
+                                        // Optional Features Here
+                                            if (i.sparrow == true){     // sparrow || bool: true/false
+                                                if (i.xml != null){            // xml || string "text"
+                                                    levelSprite.frames = FlxAtlasFrames.fromSparrow(i.graphic, i.xml);
+                                                }else{
+                                                    levelSprite.frames = FlxAtlasFrames.fromSparrow('${i.graphic}.png', '${i.graphic}.xml');
+                                                }
+
+                                                if (i.animations != null){ // animations || dynamic array, has a null check.
+                                                        var spriteAnims:Array<Dynamic> = i.animations;
+                                                        for (craftedAnimConfigs in spriteAnims){
+                                                            levelSprite.animation.addByPrefix(craftedAnimConfigs[0], craftedAnimConfigs[1], craftedAnimConfigs[2]);
+                                                        }
+                                                        if (i.startAnim != null){levelSprite.animation.play(i.startAnim);}
+                                                }else{
+                                                        if (i.startAnim != null){trace("You're attempting to make sprite [" + i + "] (Named: " + i.name + ") play an animation despite it lacking any! Please check your configuration!");}
+                                                }
+                                            } // sparrow ends here
+                                    stageSpriteCollection.add(levelSprite);
+			}
+			//add (stageSpriteCollection);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		add(gf);
 		add(dad);
@@ -961,10 +1070,7 @@ class PlayState extends MusicBeatState
 			add(i);
 		add(boyfriend);
 
-		foreObjects = new JSONStage(curStage, "front");
-		//foreObjects.loadElements();
-		add(foreObjects);
-		//foreObjects.cameras = [camGame];
+
 
 		doof = new DialogueBox(false, dialogue);
 		// doof.x += 70;
