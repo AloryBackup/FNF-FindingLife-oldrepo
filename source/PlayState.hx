@@ -145,7 +145,7 @@ class PlayState extends MusicBeatState
 	*** When the note passes through the strum line, make an "increase ticket."
 	*** The increase ticket increases the NPS, but expires a second after.
 	*** The expiry will decrement the NPS again.
-	
+
 	Fuck you, Kade Engine, I'm making your shit fold like an ass cheek.
 	*/
 	var halloweenLevel:Bool = false;
@@ -318,16 +318,18 @@ class PlayState extends MusicBeatState
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		//camHPHUD = new FlxCamera();
+		FlxG.cameras.list.push(camGame);
 
 		camHUD.bgColor.alpha = 0;
 		//camHPHUD.bgColor.alpha = 0;
 
-		FlxG.cameras.reset(camGame);
+		//FlxG.cameras.reset(camGame);
 		//FlxG.cameras.add(camHPHUD);
+		FlxG.cameras.add(camGame);
 		FlxG.cameras.add(camHUD);
 
 		//FlxCamera.defaultCameras = [camGame];
-		
+
 		FlxG.camera.followLerp = (60 / FlxG.updateFramerate);
 
 		persistentUpdate = true;
@@ -837,7 +839,7 @@ class PlayState extends MusicBeatState
 
 		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
-		
+
 		var DynamicKey:Dynamic = Highscore.getRaw("UH OH!");
 
 		dad = new Character(100, 100, SONG.player2);
@@ -882,7 +884,7 @@ class PlayState extends MusicBeatState
 				dad.y += 100;
 				camPos.set(dad.getGraphicMidpoint().x + 300, dad.getGraphicMidpoint().y);
 		}
-		
+
 		if(bti(SONG.actors) > 1){
 			for(i in 1...SONG.actors){
 				var o:Array<Float> = SONG.offsets[i-1];
@@ -992,7 +994,7 @@ class PlayState extends MusicBeatState
 
                     parsedFile = haxe.Json.parse(sys.io.File.getContent('assets/data/stages/$curStage.json'));
                     trace('Loading stage file: $curStage as assets/data/stages/$curStage.json');
-                    currentSpriteLoader = parsedFile.backSprites;
+                    currentSpriteLoader = parsedFile.sprites;
 
 		// The front/back sprites won't be seperated this time, opting for a way to instead add the characters with the sprites.
 
@@ -1008,6 +1010,7 @@ class PlayState extends MusicBeatState
 		add (stageSpriteCollection);
 
 				for (i in currentSpriteLoader){ // for sprites in either front or back. Removed some null checks. Screw it, we ball.
+							if (i.type == "bgSprite"){
                                             levelSprite = new FlxSprite(i.x, i.y); // For variables x and y in the json. Ints, all real numbers.
 
                                             if (parsedFile.directory != null)
@@ -1040,6 +1043,16 @@ class PlayState extends MusicBeatState
                                                 }
                                             } // sparrow ends here
                                     stageSpriteCollection.add(levelSprite);
+						}else if (i.type == "bf"){
+								add(boyfriend);
+						}else if (i.type == "gf"){
+								add(gf);
+						}else if (i.type == "dad"){
+								add(dad);
+						}else if (i.type == "extrachars"){
+								for(i in morePlayers)
+									add(i);
+						}
 			}
 			//add (stageSpriteCollection);
 
@@ -1050,25 +1063,6 @@ class PlayState extends MusicBeatState
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		add(gf);
-		add(dad);
-		for(i in morePlayers)
-			add(i);
-		add(boyfriend);
 
 
 
@@ -1116,7 +1110,7 @@ class PlayState extends MusicBeatState
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		add(healthBarBG);
-		
+
 		TimeBarBG = new FlxSprite(0, FlxG.height * 0.04).loadGraphic('assets/images/healthBar.png');
 		TimeBarBG.screenCenter(X);
 		TimeBarBG.scrollFactor.set();
@@ -1444,7 +1438,7 @@ class PlayState extends MusicBeatState
 				// generateSong('fresh');
 			}, 2147483647);
 		}
-			
+
 		if(bti(SONG.clf) >= 0)
 			piss = new FlxTimer().start((Conductor.crochet / 1000) * (SONG.clf + 1) * 4, Fuck);
 		else
@@ -1546,12 +1540,12 @@ class PlayState extends MusicBeatState
 				{
 					gottaHitNote = !section.mustHitSection;
 				}
-				
+
 				if(!alreadyPushed && gottaHitNote){
 					mustHitPain.push(true);
 					alreadyPushed = true;
 				}
-				
+
 				var oldNote:Note;
 				if (unspawnNotes.length > 0)
 					oldNote = unspawnNotes[Std.int(unspawnNotes.length - 1)];
@@ -1636,7 +1630,7 @@ class PlayState extends MusicBeatState
 			switch (curStage)
 			{
 				case 'school' | 'schoolEvil' | 'spacetime':
-					
+
 					babyArrow.loadGraphic('assets/images/weeb/pixelUI/arrows-pixels.png', true, 17, 17);
 					babyArrow.animation.add('green', [8]);
 					babyArrow.animation.add('red', [9]);
@@ -1703,14 +1697,14 @@ class PlayState extends MusicBeatState
 
 				default:
 					babyArrow.frames = FlxAtlasFrames.fromSparrow(
-						ninefret ? 
+						ninefret ?
 						'assets/images/jic/NOTE_assets.png' :
 						Cursed ?
 						'assets/images/cursedclient.png' :
-						ip ? 
+						ip ?
 						'assets/images/precision.png' :
 						'assets/images/NOTE_assets.png',
-						ninefret ? 
+						ninefret ?
 						'assets/images/jic/NOTE_assets.xml' :
 						'assets/images/NOTE_assets.xml');
 					babyArrow.animation.addByPrefix('green', 'arrowUP');
@@ -1941,7 +1935,7 @@ class PlayState extends MusicBeatState
 								] + ' (${misses > 0 ? misses + 'M' : ''}${misses > 0 && breaks > 0 ? "+" : ""}${breaks > 0 ? breaks + "B" : ""})';
 		if(breaks == 0 && misses == 0)
 			return 'FC (NMB) | $Grade | ${FlxMath.roundDecimal(Percentage * 100, 1)}%';
-		else 
+		else
 			return '$Breaker | $Grade | ${FlxMath.roundDecimal(Percentage * 100, 1)}%';
 	}
 	private var paused:Bool = false;
@@ -2215,7 +2209,7 @@ class PlayState extends MusicBeatState
 		{
 			if (unspawnNotes[0].strumTime - Conductor.songPosition < 1500)
 			{
-			
+
 				var dunceNote:Note = unspawnNotes[0];
 				notes.add(dunceNote);
 
@@ -2230,11 +2224,11 @@ class PlayState extends MusicBeatState
 			{
 				var activity = !((downscroll && daNote.y < 0) ||
 					(!downscroll && daNote.y > FlxG.height));
-					
+
 				daNote.active = activity;
 				daNote.visible = activity && (centeredNotes ? daNote.mustPress : true);
 
-				daNote.y = downscroll ? 
+				daNote.y = downscroll ?
 					strumLine.y - ((daNote.strumTime - Conductor.songPosition) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))) :
 					(strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))); // This definitely should be shortened.
 				if(daNote.animation.curAnim.name.substr(-3) == 'end' && downscroll)
@@ -2279,7 +2273,7 @@ class PlayState extends MusicBeatState
 				}
 				else
 				{
-					
+
 					if (daNote.isSustainNote
 						&& daNote.y + daNote.offset.y <= strumLine.y + Note.swagWidth / 2
 						&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
@@ -2353,7 +2347,7 @@ class PlayState extends MusicBeatState
 
 					if(daNote.openHold != null)
 						remove(daNote.openHold);
-					
+
 					notes.remove(daNote, true);
 					toDestroy.push(daNote);
 					daNote.kill();
@@ -2394,7 +2388,7 @@ class PlayState extends MusicBeatState
 
 						daNote.active = false;
 						daNote.visible = false;
-						
+
 						if(daNote.openHold != null)
 							remove(daNote.openHold);
 						notes.remove(daNote, true);
@@ -2673,7 +2667,7 @@ class PlayState extends MusicBeatState
 
 			daLoop++;
 		}
-		/* 
+		/*
 			trace(combo);
 			trace(seperatedScore);
 		 */
@@ -2912,7 +2906,7 @@ class PlayState extends MusicBeatState
 				{
 					noteCheck(controlArray[daNote.noteData], daNote);
 				}
-				/* 
+				/*
 					if (controlArray[daNote.noteData])
 						goodNoteHit(daNote);
 				 */
@@ -2960,7 +2954,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 		if(bot && !boyfriend.stunned && generatedMusic){
-			
+
 		}
 	if ((up || right || down || left || l2 || r2 || k1||k2||k3||k4||k5||k6||k7||k8||k9) && !boyfriend.stunned && generatedMusic)
 		{
@@ -3101,7 +3095,7 @@ class PlayState extends MusicBeatState
 	public static function harm(damage:Float = 0){
 		healthj -= damage;
 	}
-	
+
 	function noteMiss(direction:Int = 1):Void
 	{
 		if (!boyfriend.stunned)
@@ -3225,7 +3219,7 @@ class PlayState extends MusicBeatState
 				healthj += 0.023;
 			else
 				healthj += 0.004;
-			
+
 			var upP = controls.UP_P;
 			var rightP = controls.RIGHT_P;
 			var downP = controls.DOWN_P;
@@ -3254,7 +3248,7 @@ class PlayState extends MusicBeatState
 			) : sixfret ? (
 				leftP ? 0 :
 				downP ? 1 :
-				l2P ? 2 : 
+				l2P ? 2 :
 				r2P ? 3 :
 				upP ? 4 :
 				rightP ? 5 : 1
