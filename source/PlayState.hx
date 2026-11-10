@@ -61,6 +61,7 @@ import stage.StageData.StageDataParser; // Same filename as OG
 //import flixel.FlxState;
 
 //
+import flixel.system.frontEnds.CameraFrontEnd; //For camGame
 
 
 // Pre-existing notes:
@@ -324,9 +325,26 @@ class PlayState extends MusicBeatState
 		camHUD.bgColor.alpha = 0;
 		//camHPHUD.bgColor.alpha = 0;
 
-		FlxG.cameras.reset(camGame);
 		//FlxG.cameras.add(camHPHUD);
+		//FlxG.cameras.add(camGame); // Don't add camGame. Make it default!
+
+		//FlxCamera.defaultCameras
+		//FlxCamera._defaultCameras.insert(0, camGame);
+		// https://github.com/HaxeFlixel/flixel/blob/91d16d375166e67a14a19bce41b7d5efec0469d9/flixel/FlxCamera.hx#L2363
+		//FlxCamera.set_defaultCameras(camGame);
+		// https://api.haxeflixel.com/flixel/system/frontEnds/CameraFrontEnd.html#add https://api.haxeflixel.com/flixel/system/frontEnds/CameraFrontEnd.html#setDefaultDrawTarget
+
+		/*var camHelper = new FlxG.cameras();
+
+		camHelper.setDefaultDrawTarget(camGame, true);
+		camHelper.add(camGame);*/
+		//FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		//FlxG.cameras.add(camGame);
+
+		FlxG.cameras.setDefaultDrawTarget(camGame, true);
 		FlxG.cameras.add(camGame);
+
+		//FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
 
 		//FlxCamera.defaultCameras = [camGame];
@@ -1046,7 +1064,8 @@ class PlayState extends MusicBeatState
 				var daStrumTime:Float = songNotes[0];
 				var daNoteData:Int = Std.int(songNotes[1] % 5);
 
-				/*var RAWcat:Dynamic = songNotes[3];
+				//
+				var RAWcat:Dynamic = songNotes[3];
 				var RAWrrjmiakfnjksnsdjfesuigfuiafndifgvberuiagboiaenrboavonvoeanfoiwenfwaeoibfiodewasafnewoibvgaewiobaueifewioafe:Dynamic = songNotes[4];
 				var daCat:Int = 0;
 				var RAWactor:Dynamic = songNotes[5];
@@ -1057,7 +1076,11 @@ class PlayState extends MusicBeatState
 				if(RAWrrjmiakfnjksnsdjfesuigfuiafndifgvberuiagboiaenrboavonvoeanfoiwenfwaeoibfiodewasafnewoibvgaewiobaueifewioafe != null)
 					Why = bti(RAWrrjmiakfnjksnsdjfesuigfuiafndifgvberuiagboiaenrboavonvoeanfoiwenfwaeoibfiodewasafnewoibvgaewiobaueifewioafe);
 				if(RAWactor != null)
-					daActor = RAWactor;8*/
+					daActor = RAWactor;
+					// I hate how these variables are required since I don't know what they do.
+
+
+
 				var gottaHitNote:Bool = section.mustHitSection;
 
 				if (songNotes[1] > 4)
@@ -1748,16 +1771,20 @@ class PlayState extends MusicBeatState
 		{
 			notes.forEachAlive(function(daNote:Note)
 			{
+				//var strumMath:Float = (0.45 * FlxMath.roundDecimal(SONG.speed, 2));
 				var activity = !((downscroll && daNote.y < 0) ||
 					(!downscroll && daNote.y > FlxG.height));
 
 				daNote.active = activity;
 				daNote.visible = activity && (centeredNotes ? daNote.mustPress : true);
 
-				daNote.y = downscroll ?
-				var strumMath:Int = (0.45 * FlxMath.roundDecimal(SONG.speed, 2));
-					strumLine.y - ((daNote.strumTime - Conductor.songPosition) * (strumMath);
-					(strumLine.y - (Conductor.songPosition - daNote.strumTime) * (strumMath)); // This definitely should be shortened.
+				/*daNote.y = downscroll ?
+					strumLine.y - ((daNote.strumTime - Conductor.songPosition) * (strumMath)) :
+					(strumLine.y - (Conductor.songPosition - daNote.strumTime) * (strumMath)); */// This definitely should be shortened.
+
+					daNote.y = downscroll ?
+					strumLine.y - ((daNote.strumTime - Conductor.songPosition) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))) :
+					(strumLine.y - (Conductor.songPosition - daNote.strumTime) * (0.45 * FlxMath.roundDecimal(SONG.speed, 2))); // mmm
 				if(daNote.animation.curAnim.name.substr(-3) == 'end' && downscroll)
 					daNote.y += 102.4 / SONG.speed; // not final
 				if(daNote.openHold != null){

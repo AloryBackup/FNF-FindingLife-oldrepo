@@ -652,8 +652,6 @@ class Character extends FlxSprite
 	}
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
 	{
-		if((!flipX && (curCharacter.startsWith('bf') || curCharacter == 'opheebop')) || (flipX && !(curCharacter.startsWith('bf') || curCharacter == 'opheebop')))
-			x = -x;
 		animOffsets[name] = [x, y];
 	}
 }
