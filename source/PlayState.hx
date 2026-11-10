@@ -2559,7 +2559,8 @@ class PlayState extends MusicBeatState
 			});
 		}
 
-		if (boyfriend.holdTimer > Conductor.stepCrochet * 0.004 && !up && !down && !right && !left)
+		trace("trace " + boyfriend.holdTimer);
+		if (boyfriend.holdTimer != -120 && (boyfriend.holdTimer > Conductor.stepCrochet * 0.004 && !up && !down && !right && !left))
 		{
 			if (boyfriend.animation.curAnim.name.startsWith('sing') && !boyfriend.animation.curAnim.name.endsWith('miss'))
 			{
