@@ -1,12 +1,20 @@
-# Note
+# Disclaimer
+This is a shoddy edit of a really old FNF engine which I was going to use for a mod but I ended up having quite a bit of issues. It's not totally unusable, just a bit troublesome. Though it might be since I was using Hashlink to compile.
+I don't know if the original source code is on GitHub or if the original engine's creator has a GitHub account. I do know this engine was referred to as "Distay Engine" (named after the creator of it) but the source code I downloaded had a bit more of a vulgar title for the engine/source code.
 
-windows.h was taken from 
+## Changes
+- Stage Format
+   - The stages now support a custom JSON format, however only a version of the main stage exists. It should support Psych Engine's stage JSON files, but I don't know entirely.
+- Removed extra characters/code/data.
+- Removed checks for Newgrounds and Discord RPC.
+## Broken Changes
+- New Song Format
+   - Songs now go in assets/songs/[SONGNAME], audio and charts. For some reason, only the opponent's vocals will play.
+## Known Issues
+- Animations are quite buggy. Even aside from the oldFNF jank, there are some issues. Such as all characters returning to their idle pose when the game is paused.
+- There might be a chance that [value] cannot be parsed as [other value] when compiled for Hashlink. I've been having that issue with a lot of old FNF engines as of late.
 
-
-
-
-
-# OLD
+# OLD DESCRIPTION
 
 # Friday Night Funkin
 
